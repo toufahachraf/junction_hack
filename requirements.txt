@@ -1,0 +1,11 @@
+torch
+pennylane
+pennylane-qiskit
+qiskit
+qiskit-ibm-runtime
+flwr
+pandas
+scikit-learn
+matplotlib
+seaborn
+jupyter
