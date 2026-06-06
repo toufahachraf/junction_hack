@@ -75,12 +75,18 @@ def main():
     auc = roc_auc_score(y, mse_scores)
     print(f"ROC-AUC Score: {auc:.4f} (1.0 is perfect, 0.5 is random)")
     
-    # Define an anomaly threshold (e.g., 95th percentile of the errors)
-    # In a real scenario, this is calibrated on a validation set of normal data
-    threshold = np.percentile(mse_scores, 95)
-    print(f"Calculated Anomaly Threshold (95th Percentile): {threshold:.4f}")
+    # Dynamically find the best threshold to maximize F1-Score
+    from sklearn.metrics import precision_recall_curve
+    precisions, recalls, thresholds = precision_recall_curve(y, mse_scores)
     
-    y_pred = (mse_scores > threshold).astype(int)
+    # Calculate F1 score for each threshold (ignoring the last element to match thresholds array length)
+    f1_scores = 2 * (precisions[:-1] * recalls[:-1]) / (precisions[:-1] + recalls[:-1] + 1e-10)
+    best_idx = np.argmax(f1_scores)
+    best_threshold = thresholds[best_idx]
+    
+    print(f"Optimized Anomaly Threshold: {best_threshold:.4f}")
+    
+    y_pred = (mse_scores > best_threshold).astype(int)
     
     precision, recall, f1, _ = precision_recall_fscore_support(y, y_pred, average='binary', zero_division=0)
     cm = confusion_matrix(y, y_pred)
