@@ -35,11 +35,13 @@ def main():
             df_encoded[col] = df_encoded[col].astype(int)
 
     # Scale numerical columns using MinMaxScaler (-pi, pi) for Angle Embedding
-    print("Normalizing numerical amounts between -pi and pi...")
+    print("Applying Log-Transform and normalizing numerical amounts between -pi and pi...")
     num_cols = ['Amount Paid', 'Amount Received']
     scaler = MinMaxScaler(feature_range=(-np.pi, np.pi))
     for col in num_cols:
         if col in df_encoded.columns:
+            # Apply log1p transform to handle massive outliers
+            df_encoded[col] = np.log1p(df_encoded[col])
             df_encoded[col] = scaler.fit_transform(df_encoded[[col]])
 
     print("Splitting datasets for Federated Learning...")
