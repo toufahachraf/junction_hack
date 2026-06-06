@@ -7,7 +7,7 @@ import os
 def main():
     print("Loading dataset...")
     # Load data
-    df = pd.read_csv('data/HI-Small_Trans.csv')
+    df = pd.read_csv('gs://junction-aml-quantum-bucket/HI-Small_Trans.csv')
 
     # Drop non-feature columns (identifiers and timestamp)
     print("Dropping identifier columns...")
