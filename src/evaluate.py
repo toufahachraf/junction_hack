@@ -43,8 +43,8 @@ def main():
 
     # 3. Initialize Model & Load Federated Weights
     print(f"\nBuilding Hybrid Quantum Autoencoder...")
-    # NOTE: n_layers=2 must match what was used in client.py
-    model = HybridAutoencoder(num_features=num_features, n_qubits=8, n_layers=2, device=device_name)
+    # NOTE: n_layers=1 must match what was used in client.py
+    model = HybridAutoencoder(num_features=num_features, n_qubits=8, n_layers=1, device=device_name)
     
     weights_path = f"models/global_weights_round_{args.round}.npy"
     print(f"Loading aggregated global weights from: {weights_path}")

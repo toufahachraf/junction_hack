@@ -35,7 +35,7 @@ class QuantumBankClient(fl.client.NumPyClient):
         self.trainloader = trainloader
         self.criterion = nn.MSELoss()
         # Adam optimizer works well for Hybrid Quantum models
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
 
     def get_parameters(self, config):
         """Extract PyTorch/Quantum parameters to send to the Server"""
@@ -53,7 +53,7 @@ class QuantumBankClient(fl.client.NumPyClient):
         self.set_parameters(parameters)
         
         self.model.train()
-        for epoch in range(3): # 3 local epochs per federated round for better convergence
+        for epoch in range(1): # 1 local epoch per federated round to prevent Client Drift
             running_loss = 0.0
             for batch_idx, (data, target) in enumerate(self.trainloader):
                 self.optimizer.zero_grad()
@@ -98,7 +98,7 @@ def main():
     
     # Initialize model
     print("Building Hybrid Quantum Autoencoder (Simulator Backend)...")
-    model = HybridAutoencoder(num_features=num_features, n_layers=2, device="default.qubit")
+    model = HybridAutoencoder(num_features=num_features, n_layers=1, device="default.qubit")
     
     # Start Flower client
     print("Connecting to Central Server (127.0.0.1:8080)...")
