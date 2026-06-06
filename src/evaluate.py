@@ -14,7 +14,7 @@ from model import HybridAutoencoder
 
 def main():
     parser = argparse.ArgumentParser(description="Zero-Day Anomaly Detection Evaluation")
-    parser.add_argument("--round", type=int, default=3, help="Which federated round model to load")
+    parser.add_argument("--round", type=int, default=10, help="Which federated round model to load")
     parser.add_argument("--real-qpu", action="store_true", help="Run on real IBM Quantum Hardware instead of simulator")
     args = parser.parse_args()
 
@@ -43,8 +43,8 @@ def main():
 
     # 3. Initialize Model & Load Federated Weights
     print(f"\nBuilding Hybrid Quantum Autoencoder...")
-    # NOTE: n_layers=1 must match what was used in client.py
-    model = HybridAutoencoder(num_features=num_features, n_qubits=8, n_layers=1, device=device_name)
+    # NOTE: n_layers=2 must match what was used in client.py
+    model = HybridAutoencoder(num_features=num_features, n_qubits=8, n_layers=2, device=device_name)
     
     weights_path = f"models/global_weights_round_{args.round}.npy"
     print(f"Loading aggregated global weights from: {weights_path}")
