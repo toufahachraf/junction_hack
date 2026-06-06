@@ -101,9 +101,9 @@ def main():
     model = HybridAutoencoder(num_features=num_features, n_layers=1, device="default.qubit")
     
     # Start Flower client
-    print("Connecting to Central Server (127.0.0.1:8080)...")
+    print("Connecting to Central Server (127.0.0.1:8081)...")
     fl.client.start_numpy_client(
-        server_address="127.0.0.1:8080",
+        server_address="127.0.0.1:8081",
         client=QuantumBankClient(model, trainloader),
     )
 
