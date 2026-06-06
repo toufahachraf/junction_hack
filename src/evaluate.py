@@ -32,11 +32,21 @@ def main():
     print(f"True Illicit Transactions: {sum(y)}")
     print(f"True Normal Transactions: {len(y) - sum(y)}")
 
-    # 2. Determine Backend
+    # 2. Determine Backend & Apply Safety Limit
     if args.real_qpu:
         print("\n[WARNING] Attempting to connect to IBM Quantum Hardware!")
         print("Ensure you have saved your IBMQ account token locally.")
         device_name = "qiskit.ibmq" # This requires qiskit-ibm-runtime to be configured
+        
+        # SAFETY LIMIT: Reduce dataset size to avoid draining the 10-minute quota
+        print(">> APPLYING SAFETY LIMIT: Sampling 20 transactions for real QPU evaluation <<")
+        # Grab 10 normal and 10 illicit
+        illicit_idx = np.where(y == 1)[0][:10]
+        normal_idx = np.where(y == 0)[0][:10]
+        safe_idx = np.concatenate([illicit_idx, normal_idx])
+        
+        X = X[safe_idx]
+        y = y[safe_idx]
     else:
         print("\n[INFO] Using fast local Quantum Simulator (default.qubit)")
         device_name = "default.qubit"
