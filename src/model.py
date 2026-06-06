@@ -3,7 +3,7 @@ import torch.nn as nn
 import pennylane as qml
 
 class HybridAutoencoder(nn.Module):
-    def __init__(self, num_features, n_qubits=8, n_layers=2, device="default.qubit"):
+    def __init__(self, num_features, n_qubits=8, n_layers=2, device="default.qubit", backend=None):
         """
         Hybrid Quantum-Classical Autoencoder.
         
@@ -29,7 +29,10 @@ class HybridAutoencoder(nn.Module):
         )
         
         # Initialize quantum device
-        self.dev = qml.device(device, wires=n_qubits)
+        if backend:
+            self.dev = qml.device(device, wires=n_qubits, backend=backend)
+        else:
+            self.dev = qml.device(device, wires=n_qubits)
         
         # Define the quantum circuit
         @qml.qnode(self.dev, interface="torch")

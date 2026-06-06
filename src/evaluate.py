@@ -36,7 +36,8 @@ def main():
     if args.real_qpu:
         print("\n[WARNING] Attempting to connect to IBM Quantum Hardware!")
         print("Ensure you have saved your IBMQ account token locally.")
-        device_name = "qiskit.ibmq" # This requires qiskit-ibm-runtime to be configured
+        device_name = "qiskit.remote" # Updated device for qiskit-ibm-runtime
+        backend_name = "least_busy"
         
         # SAFETY LIMIT: Reduce dataset size to avoid draining the 10-minute quota
         print(">> APPLYING SAFETY LIMIT: Sampling 20 transactions for real QPU evaluation <<")
@@ -50,11 +51,12 @@ def main():
     else:
         print("\n[INFO] Using fast local Quantum Simulator (default.qubit)")
         device_name = "default.qubit"
+        backend_name = None
 
     # 3. Initialize Model & Load Federated Weights
     print(f"\nBuilding Hybrid Quantum Autoencoder...")
     # NOTE: n_layers=1 must match what was used in client.py
-    model = HybridAutoencoder(num_features=num_features, n_qubits=8, n_layers=1, device=device_name)
+    model = HybridAutoencoder(num_features=num_features, n_qubits=8, n_layers=1, device=device_name, backend=backend_name)
     
     weights_path = f"models/global_weights_round_{args.round}.npy"
     print(f"Loading aggregated global weights from: {weights_path}")
