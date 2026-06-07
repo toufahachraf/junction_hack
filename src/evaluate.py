@@ -42,10 +42,10 @@ def main():
         from qiskit_ibm_runtime import QiskitRuntimeService
         
         if args.token:
-            service = QiskitRuntimeService(channel="ibm_quantum", token=args.token)
+            service = QiskitRuntimeService(channel="ibm_quantum", token=args.token, url="https://api.quantum.ibm.com")
         else:
             print("No --token provided. Attempting to use saved IBM account...")
-            service = QiskitRuntimeService(channel="ibm_quantum")
+            service = QiskitRuntimeService(channel="ibm_quantum", url="https://api.quantum.ibm.com")
             
         backend_name = service.least_busy(simulator=False, operational=True, min_num_qubits=10)
         print(f"Successfully connected to: {backend_name.name}")
