@@ -16,6 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description="Zero-Day Anomaly Detection Evaluation")
     parser.add_argument("--round", type=int, default=10, help="Which federated round model to load")
     parser.add_argument("--real-qpu", action="store_true", help="Run on real IBM Quantum Hardware instead of simulator")
+    parser.add_argument("--token", type=str, default=None, help="IBM Quantum API Token (required if using --real-qpu)")
     args = parser.parse_args()
 
     print("=== Phase 3: Zero-Day Anomaly Detection ===")
@@ -35,12 +36,17 @@ def main():
     # 2. Determine Backend & Apply Safety Limit
     if args.real_qpu:
         print("\n[WARNING] Attempting to connect to IBM Quantum Hardware!")
-        print("Ensure you have saved your IBMQ account token locally.")
         device_name = "qiskit.remote" # Updated device for qiskit-ibm-runtime
         
         print("Fetching the least busy IBM Quantum backend...")
         from qiskit_ibm_runtime import QiskitRuntimeService
-        service = QiskitRuntimeService()
+        
+        if args.token:
+            service = QiskitRuntimeService(channel="ibm_quantum", token=args.token)
+        else:
+            print("No --token provided. Attempting to use saved IBM account...")
+            service = QiskitRuntimeService(channel="ibm_quantum")
+            
         backend_name = service.least_busy(simulator=False, operational=True, min_num_qubits=10)
         print(f"Successfully connected to: {backend_name.name}")
         
