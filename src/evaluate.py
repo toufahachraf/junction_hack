@@ -37,7 +37,12 @@ def main():
         print("\n[WARNING] Attempting to connect to IBM Quantum Hardware!")
         print("Ensure you have saved your IBMQ account token locally.")
         device_name = "qiskit.remote" # Updated device for qiskit-ibm-runtime
-        backend_name = "least_busy"
+        
+        print("Fetching the least busy IBM Quantum backend...")
+        from qiskit_ibm_runtime import QiskitRuntimeService
+        service = QiskitRuntimeService()
+        backend_name = service.least_busy(simulator=False, operational=True, min_num_qubits=10)
+        print(f"Successfully connected to: {backend_name.name}")
         
         # SAFETY LIMIT: Reduce dataset size to avoid draining the 10-minute quota
         print(">> APPLYING SAFETY LIMIT: Sampling 20 transactions for real QPU evaluation <<")
